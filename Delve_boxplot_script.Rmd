@@ -1,0 +1,170 @@
+---
+title: "Untitled"
+author: "Niall Garvey"
+date: "03/08/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+install.packages("subselect")
+```
+
+
+```{r}
+tab = read.delim("hg38_fair+new_genes_phase1and2_tpm.osc.txt", header = T, skip = 1831, stringsAsFactors = FALSE )
+```
+
+```{r}
+canconical_histone_genes = subset(tbl2,pseudo!="TRUE")
+canconical_histone_genes2 = subset(canconical_histone_genes,variant!="TRUE")
+histone_gene_names_vector = as.vector(canconical_histone_genes2$HGNC)
+
+tab2 = tab %>%
+        filter(grepl(paste(histone_gene_names_vector, collapse="|"), X00Annotation))
+library("reshape2")
+tab2_melted <- melt(tab2, id = c("X00Annotation"))
+tab2_melted
+```
+
+```{r}
+#H2A
+H2A.vector = c("H2AC11","H2AC12","H2AC13","H2AC14","H2AC15","H2AC16","H2AC17","H2AC21","H2AC20","H2AC4","H2AC7","H2AC8","H2AW")
+H2A_tab = tab2_melted %>%
+        filter(grepl(paste(H2A.vector, collapse="|"), X00Annotation))
+
+H2A_tab$totcount = sum(H2A_tab$value)
+H2A_tab$pctcount = ( H2A_tab$value/H2A_tab$totcount)
+```
+
+```{r}
+
+#Graph for H2A
+library(ggplot2)
+ggplot(H2A_tab, aes(y=pctcount, x=X00Annotation, colour=X00Annotation, fill=X00Annotation)) +
+
+
+  geom_boxplot(show.legend=F) +
+  
+  coord_cartesian(ylim=c(0,0.00008)) +
+  
+  theme_minimal() +
+
+theme(
+  axis.text.y = element_text(angle = 20,size =7),
+  axis.text.x = element_text(angle = 20,size =7),
+  axis.title.y = element_text(size = 10),
+  axis.title.x = element_blank(),
+  axis.line.x = element_line(size=0.2),
+  axis.ticks.x = element_blank(),
+  axis.line.y = element_line(size=0.2),
+  panel.grid.minor.x = element_blank(),
+  panel.grid.minor.y = element_blank(),
+  panel.grid.major.y = element_blank(),
+  panel.grid.major.x = element_blank())
+
+ggsave("~/research_project/boxplots/H2A_delve_boxplot.png", bg="white")
+```
+
+```{r}
+#H2B
+H2B.vector = c("H2BC10","H2BC11", "H2BC12", "H2BC13", "H2BC14", "H2BC17","H2BC21", "H2BC3", "H2BC5", "H2BC6","H2BC7","H2BC8","H2BC9", "H2BU1")
+H2B_tab = tab2_melted %>%
+        filter(grepl(paste(H2B.vector, collapse="|"), X00Annotation))
+
+H2B_tab$totcount = sum(H2B_tab$value)
+H2B_tab$pctcount = ( H2B_tab$value/H2B_tab$totcount)
+#Graph for H2B
+library(ggplot2)
+ggplot(H2B_tab, aes(y=pctcount, x=X00Annotation, colour=X00Annotation, fill=X00Annotation)) +
+  coord_cartesian(ylim=c(0,0.00012)) +
+  
+  geom_boxplot(show.legend=F) +
+  
+  theme_minimal() +
+
+theme(
+  axis.text.y = element_text(angle = 20,size =7),
+  axis.text.x = element_text(angle = 20,size =7),
+  axis.title.y = element_text(size = 10),
+  axis.title.x = element_blank(),
+  axis.line.x = element_line(size=0.2),
+  axis.ticks.x = element_blank(),
+  axis.line.y = element_line(size=0.2),
+  panel.grid.minor.x = element_blank(),
+  panel.grid.minor.y = element_blank(),
+  panel.grid.major.y = element_blank(),
+  panel.grid.major.x = element_blank())
+
+ggsave("~/research_project/boxplots/H2B_delve_boxplot.png", bg="white")
+```
+
+```{r}
+#H3
+H3.vector = c("H3-4","H3-5","H3C1", "H3C10", "H3C11", "H3C12", "H3C13", "H3C14,p1@H3C15", "H3C2", "H3C3H3C4", "H3C6", "H3C7", "H3C8")
+H3_tab = tab2_melted %>%
+        filter(grepl(paste(H3.vector, collapse="|"), X00Annotation))
+H3_tab$totcount = sum(H3_tab$value)
+H3_tab$pctcount = ( H3_tab$value/H3_tab$totcount)
+
+
+ggplot(H3_tab, aes(y=pctcount, x=X00Annotation, colour=X00Annotation, fill=X00Annotation)) +
+  coord_cartesian(ylim=c(0,0.00021)) +
+  
+  geom_boxplot(show.legend=F) +
+  
+  theme_minimal() +
+
+theme(
+  axis.text.y = element_text(angle = 20,size =7),
+  axis.text.x = element_text(angle = 20,size =7),
+  axis.title.y = element_text(size = 10),
+  axis.title.x = element_blank(),
+  axis.line.x = element_line(size=0.2),
+  axis.ticks.x = element_blank(),
+  axis.line.y = element_line(size=0.2),
+  panel.grid.minor.x = element_blank(),
+  panel.grid.minor.y = element_blank(),
+  panel.grid.major.y = element_blank(),
+  panel.grid.major.x = element_blank())
+
+ggsave("~/research_project/boxplots/H3_delve_boxplot.png", bg="white")
+```
+
+```{r}
+#H4
+H4.vector = c("H4-16", "H4C1", "H4C11", "H4C12", "H4C13", "H4C15", "H4C2", "H4C3", "H4C4", "H4C5", "H4C6", "H4C8", "H4C9")
+H4_tab = tab2_melted %>%
+        filter(grepl(paste(H4.vector, collapse="|"), X00Annotation))
+
+H4_tab$totcount = sum(H4_tab$value)
+H4_tab$pctcount = ( H4_tab$value/H4_tab$totcount)
+
+ggplot(H4_tab, aes(y=pctcount, x=X00Annotation, colour=X00Annotation, fill=X00Annotation)) +
+  coord_cartesian(ylim=c(0,0.00018)) +
+  
+  geom_boxplot(show.legend=F) +
+  
+  theme_minimal() +
+
+theme(
+  axis.text.y = element_text(angle = 20,size =7),
+  axis.text.x = element_text(angle = 20,size =7),
+  axis.title.y = element_text(size = 10),
+  axis.title.x = element_blank(),
+  axis.line.x = element_line(size=0.2),
+  axis.ticks.x = element_blank(),
+  axis.line.y = element_line(size=0.2),
+  panel.grid.minor.x = element_blank(),
+  panel.grid.minor.y = element_blank(),
+  panel.grid.major.y = element_blank(),
+  panel.grid.major.x = element_blank())
+
+ggsave("~/research_project/boxplots/H4_delve_boxplot.png", bg="white")
+```
+
+
+
