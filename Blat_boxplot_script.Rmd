@@ -1,0 +1,176 @@
+---
+title: "Untitled"
+author: "Niall Garvey"
+date: "11/08/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library("reshape2")
+blat = read.delim("AllBLATpslfiles-210811-1144.txt", header = T, stringsAsFactors = F)
+blat = blat[-c(82, 83), ]
+drops <- c("HGNC.1","number")
+blat2 = blat[ , !(names(blat) %in% drops)]
+blat_melted <- melt(blat2, id = c("HGNC", "type")) 
+blat_melted$value <- as.numeric(blat_melted$value)
+```
+
+```{r}
+#H2A
+blat_melted2 = subset(blat_melted, type!="H1")
+blat_melted3 = subset(blat_melted2, type!="H2B")
+blat_melted4 = subset(blat_melted3, type!="H3")
+blat_melted5 = subset(blat_melted4, type!="H4")
+
+blat_melted5$totcount = sum(blat_melted5$value)
+blat_melted5$pctcount = ( blat_melted5$value/blat_melted5$totcount)
+
+#Graph for H2A
+library(ggplot2)
+ggplot(blat_melted5, aes(y=pctcount, x=HGNC, colour=HGNC, fill=HGNC)) +
+
+  
+
+  geom_boxplot(show.legend=F) +
+  
+  coord_cartesian(ylim=c(0,0.00012)) +
+  
+ 
+  theme_minimal() +
+
+theme(
+  axis.text.y = element_text(angle = 20,size =7),
+  axis.text.x = element_text(angle = 20,size =7),
+  axis.title.y = element_text(size = 10),
+  axis.title.x = element_blank(),
+  axis.line.x = element_line(size=0.2),
+  axis.ticks.x = element_blank(),
+  axis.line.y = element_line(size=0.2),
+  panel.grid.minor.x = element_blank(),
+  panel.grid.minor.y = element_blank(),
+  panel.grid.major.y = element_blank(),
+  panel.grid.major.x = element_blank())
+
+ggsave("~/research_project/boxplots/H2A_blat_boxplot.png", bg="white")
+
+```
+
+```{r}
+#H2B
+
+blat_melted6 = subset(blat_melted2, type!="H2A")
+blat_melted7 = subset(blat_melted6, type!="H3")
+blat_melted8 = subset(blat_melted7, type!="H4")
+
+blat_melted8$totcount_H2B = sum(blat_melted8$value)
+blat_melted8$pctcount = ( blat_melted8$value/blat_melted8$totcount_H2B)
+
+#Graph for H2B
+library(ggplot2)
+ggplot(blat_melted8, aes(y=pctcount, x=HGNC, colour=HGNC, fill=HGNC)) +
+
+  
+
+  geom_boxplot(show.legend=F) +
+  
+  coord_cartesian(ylim=c(0,0.00025)) +
+  
+ 
+  theme_minimal() +
+
+theme(
+  axis.text.y = element_text(angle = 20,size =7),
+  axis.text.x = element_text(angle = 20,size =7),
+  axis.title.y = element_text(size = 10),
+  axis.title.x = element_blank(),
+  axis.line.x = element_line(size=0.2),
+  axis.ticks.x = element_blank(),
+  axis.line.y = element_line(size=0.2),
+  panel.grid.minor.x = element_blank(),
+  panel.grid.minor.y = element_blank(),
+  panel.grid.major.y = element_blank(),
+  panel.grid.major.x = element_blank())
+
+ggsave("~/research_project/boxplots/H2B_blat_boxplot.png", bg="white")
+```
+
+
+```{r}
+#H3
+blat_melted9 = subset(blat_melted3, type!="H2A")
+blat_melted10 = subset(blat_melted9, type!="H4")
+
+blat_melted10$totcount = sum(blat_melted10$value)
+blat_melted10$pctcount = ( blat_melted10$value/blat_melted10$totcount)
+
+#Graph for H3
+library(ggplot2)
+ggplot(blat_melted10, aes(y=pctcount, x=HGNC, colour=HGNC, fill=HGNC)) +
+
+  
+
+  geom_boxplot(show.legend=F) +
+  
+  coord_cartesian(ylim=c(0,0.00020)) +
+  
+ 
+  theme_minimal() +
+
+theme(
+  axis.text.y = element_text(angle = 20,size =7),
+  axis.text.x = element_text(angle = 20,size =7),
+  axis.title.y = element_text(size = 10),
+  axis.title.x = element_blank(),
+  axis.line.x = element_line(size=0.2),
+  axis.ticks.x = element_blank(),
+  axis.line.y = element_line(size=0.2),
+  panel.grid.minor.x = element_blank(),
+  panel.grid.minor.y = element_blank(),
+  panel.grid.major.y = element_blank(),
+  panel.grid.major.x = element_blank())
+
+ggsave("~/research_project/boxplots/H3_blat_boxplot.png", bg="white")
+
+```
+```{r}
+#H4
+blat_melted11 = subset(blat_melted9, type!="H3")
+
+
+blat_melted11$totcount = sum(blat_melted11$value)
+blat_melted11$pctcount = ( blat_melted11$value/blat_melted11$totcount)
+
+#Graph for H4
+library(ggplot2)
+ggplot(blat_melted11, aes(y=pctcount, x=HGNC, colour=HGNC, fill=HGNC)) +
+
+  
+
+  geom_boxplot(show.legend=F) +
+  
+  coord_cartesian(ylim=c(0,0.00015)) +
+  
+ 
+  theme_minimal() +
+
+theme(
+  axis.text.y = element_text(angle = 20,size =7),
+  axis.text.x = element_text(angle = 20,size =7),
+  axis.title.y = element_text(size = 10),
+  axis.title.x = element_blank(),
+  axis.line.x = element_line(size=0.2),
+  axis.ticks.x = element_blank(),
+  axis.line.y = element_line(size=0.2),
+  panel.grid.minor.x = element_blank(),
+  panel.grid.minor.y = element_blank(),
+  panel.grid.major.y = element_blank(),
+  panel.grid.major.x = element_blank())
+
+ggsave("~/research_project/boxplots/H4_blat_boxplot.png", bg="white")
+
+```
